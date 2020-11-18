@@ -1,0 +1,8 @@
+{
+  "name": "InkCentral_Backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": "https://github.com/GiovannyRamirez/InkCentral_Backend.git",
+  "author": "GiovannyRamirez <giovannyramirezs@hotmail.com>",
+  "license": "MIT"
+}
