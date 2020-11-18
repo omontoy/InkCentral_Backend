@@ -1,8 +1,15 @@
 {
-  "name": "InkCentral_Backend",
+  "name": "inkcentral_backend",
   "version": "1.0.0",
   "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
   "repository": "https://github.com/GiovannyRamirez/InkCentral_Backend.git",
   "author": "GiovannyRamirez <giovannyramirezs@hotmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
 }
