@@ -10,11 +10,7 @@ const clientSchema = new Schema ({
     type: String,
     required: true,
     minlength: 4,
-  },
-  userType: {
-    type: String,
-    enum: ['client'],
-  },
+  }
 }, {
   timestamps: true,
 })

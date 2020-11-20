@@ -4,6 +4,7 @@ function connect() {
   mongoose.connect('mongodb://localhost:27017/inkcentral', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false
   });
 
   mongoose.connection.once('open', () =>
