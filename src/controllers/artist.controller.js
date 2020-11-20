@@ -14,12 +14,8 @@ module.exports = {
   create(req, res){
     const data = req.body;
     
-    const newArtist = {
-      ...data
-    };
-    
     Artist
-      .create(newArtist)
+      .create(data)
       .then(artist => {
         res.status(201).json({ message: 'Artist Created', data: artist })
       })
@@ -43,7 +39,6 @@ module.exports = {
   },
   update(req, res){
     const { artistId } = req.params;
-    console.log();
     Artist
       .findByIdAndUpdate( artistId, req.body, { new: true } )
       .then(artist => {
