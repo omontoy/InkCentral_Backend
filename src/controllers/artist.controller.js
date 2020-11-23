@@ -20,7 +20,11 @@ module.exports = {
         res.status(201).json({ message: 'Artist Created', data: artist })
       })
       .catch(err => {
-        res.status(400).json({ message: 'Artist could not be created' })
+        const emailErr = err.errors.email;
+        const passwordErr = err.errors.password;
+        !!emailErr ? res.status(400).json(emailErr.message) : 
+                     res.status(400).json(passwordErr.message)
+        
       });
   
   },
