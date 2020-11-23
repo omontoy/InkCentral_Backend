@@ -6,16 +6,11 @@ const artistSchema = new Schema({
   email: {
     type: String,
     required: true,
-    match: [emailRegexp, 'Invalid E-mail'], 
   },
   password: {
     type: String,
     required: true,
     minlength: 4,
-  },
-  userType: {
-    type: String,
-    enum: ['artist'],
   },
   location: String,
   phone: String,
