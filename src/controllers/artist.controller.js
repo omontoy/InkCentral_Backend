@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const Artist = require('../models/artist.model')
 
 module.exports = {
@@ -11,18 +12,15 @@ module.exports = {
         res.status(404).json({ message: 'Artists not Found' })
       });
   },
-  create(req, res){
-    const data = req.body;
-    
-    Artist
-      .create(data)
-      .then(artist => {
-        res.status(201).json({ message: 'Artist Created', data: artist })
-      })
-      .catch(err => {
-        res.status(400).json({ message: 'Artist could not be created' })
-      });
-  
+  async create(req, res){
+    try {
+      const { email, password } = req.body;
+      const encPassword = await bcrypt.hash(password, 8);
+      const artist = await Artist.create({ email, password: encPassword })
+      res.status(201).json({ message: 'Artist Created', data: artist })
+    } catch (err){
+      res.status(400).json(err.errors.email.message)   
+    }
   },
   show(req, res){
     const { artistId } = req.params;

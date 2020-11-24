@@ -1,4 +1,7 @@
-const { model, Schema } = require('mongoose')
+const { model, Schema, models } = require('mongoose')
+
+const emailRegexp  = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
 
 const artistSchema = new Schema({
   name: String,
@@ -6,11 +9,21 @@ const artistSchema = new Schema({
   email: {
     type: String,
     required: true,
+    match: [emailRegexp, 'Invalid Email'],
+    validate: [
+      {
+        validator(value){
+          return models.Artist.findOne( { email: value })
+            .then(artist => !artist)
+            .catch(()=> false )
+        },
+        message: "Email already exists"
+      }
+    ]
   },
   password: {
     type: String,
     required: true,
-    minlength: 4,
   },
   location: String,
   phone: String,
