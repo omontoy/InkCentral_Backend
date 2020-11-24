@@ -24,8 +24,6 @@ const artistSchema = new Schema({
   password: {
     type: String,
     required: true,
-    minlength: [4,'Password must be more than 4 characters'],
-    maxlength: [12,'Password must be less than 12 characters']
   },
   location: String,
   phone: String,
