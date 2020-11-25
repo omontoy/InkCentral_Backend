@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const Artist = require('../models/artist.model')
 
 module.exports = {
@@ -14,13 +15,38 @@ module.exports = {
   },
   async create(req, res){
     try {
-      const { email, password } = req.body;
+      const { email, password, nickname, location, phone, name } = req.body;
       const encPassword = await bcrypt.hash(password, 8);
-      const artist = await Artist.create({ email, password: encPassword })
+      const artist = await Artist.create({ email, password: encPassword, nickname, location, phone, name })
+
       res.status(201).json({ message: 'Artist Created', data: artist })
     } catch (err){
       res.status(400).json(err.errors.email.message)   
     }
+  },
+  async login(req, res){
+    try {
+      const { email, password } = req.body;
+      const artist = await Artist.findOne({ email });
+      
+      if(!artist){
+        throw new Error('Invalid email or password') 
+      }
+      const isValid = await bcrypt.compare(password, artist.password);
+
+      if(!isValid){
+        throw new Error('Invalid email or password') 
+      }
+      const token = jwt.sign(
+        { id: artist._id },
+        process.env.SECRET,
+        { expiresIn: 60 * 60 * 24 }
+      );
+      res.status(200).json({ token })
+    } catch(err){
+      res.status(401).json({ message: err.message })
+    }
+    
   },
   show(req, res){
     const { artistId } = req.params;
