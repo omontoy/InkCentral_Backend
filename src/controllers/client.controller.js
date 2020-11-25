@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const Client = require('../models/client.models');
+const Client = require('../models/client.model');
 
 module.exports = {
   async create(req, res){
@@ -17,21 +17,21 @@ module.exports = {
     Client
       .findById( clientId )
       .then( client => {
-          res.status(200).json({ message: 'Client found', data: client })
+        res.status(200).json({ message: 'Client found', data: client })
       })
       .catch(err => {
-          res.status(404).json({ message: 'Client Not Found' })
+        res.status(404).json({ message: 'Client Not Found' })
       });
   }, 
   update(req, res){
     const { clientId } = req.params;
     Client
-      .findByIdAndUpdate( clientId, req.body, { new: true })
+      .findByIdAndUpdate( clientId, req.body, { new: true, runValidators: true })
       .then ( client => {
-          res.status(200).json({ message: 'Client updated', data: client})
+        res.status(200).json({ message: 'Client updated', data: client})
       })
       .catch( err => {
-          res.status(400).json({ message: 'Client could not be update'})
+        res.status(400).json( { message: 'Client not Updated'})
       });            
   },
   destroy(req, res){
@@ -39,10 +39,10 @@ module.exports = {
     Client
       .findByIdAndDelete(clientId)
       .then( client => {
-          res.status(200).json({ message: 'Client Deleted', data: client })
+        res.status(200).json({ message: 'Client Deleted', data: client })
       })
       .catch( err => {
-          res.status(400).json({ message: 'Client could not be delete'})
+        res.status(400).json({ message: 'Client could not be delete'})
       });
   }
 }

@@ -1,5 +1,7 @@
 const { model, Schema, models } = require('mongoose')
 
+const emailRegexp  = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
 const clientSchema = new Schema ({
   name: String,
   email: {
@@ -10,7 +12,7 @@ const clientSchema = new Schema ({
       {
         validator(value){
           return models.Client.findOne( { email: value } )
-            .then(artist => !Client)
+            .then(client => !client)
             .catch(() => false)
         },
         message: "Email already exists"
