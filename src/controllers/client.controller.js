@@ -12,37 +12,39 @@ module.exports = {
       res.status(400).json(err.errors.email.message)
     };
   },
-  show(req, res){
-    const { clientId } = req.params;
-    Client
-      .findById( clientId )
-      .then( client => {
-        res.status(200).json({ message: 'Client found', data: client })
-      })
-      .catch(err => {
-        res.status(404).json({ message: 'Client Not Found' })
-      });
+  async show(req, res){
+    try{
+      const { clientId } = req.params;
+      const client = await Client.findById( clientId );
+      if( !client ){
+        throw new Error( 'Invalid ID' )
+      }
+      res.status(200).json( {message: "Encontrado", data: client} );      
+    } catch (err){
+      res.status(400).json( err.message );
+    }
   }, 
-  update(req, res){
-    const { clientId } = req.params;
-    Client
-      .findByIdAndUpdate( clientId, req.body, { new: true, runValidators: true })
-      .then ( client => {
-        res.status(200).json({ message: 'Client updated', data: client})
-      })
-      .catch( err => {
-        res.status(400).json( { message: 'Client not Updated'})
-      });            
+  async update(req, res){
+    try {
+      const { clientId } = req.params;
+      const client = await Client.findByIdAndUpdate( clientId, req.body, { new: true, runValidators: true});
+      if( !client ){
+        throw new Error( 'Invalid ID' )
+      }
+      res.status(200).json( { message: 'Client updated', data: client} );  
+    } catch (err) {
+      res.status(400).json( err.message )
+    }
   },
-  destroy(req, res){
-    const { clientId } = req.params;
-    Client
-      .findByIdAndDelete(clientId)
-      .then( client => {
-        res.status(200).json({ message: 'Client Deleted', data: client })
-      })
-      .catch( err => {
-        res.status(400).json({ message: 'Client could not be delete'})
-      });
+  async destroy(req, res){
+    try{
+      const { clientId } = req.params;
+      const client = await Client.findByIdAndDelete( clientId );
+      if( !client ){
+        throw new Error( 'Invalid ID' )
+      }
+    } catch (err){
+      res.status(400).json( err.message )
+    }                    
   }
 }
