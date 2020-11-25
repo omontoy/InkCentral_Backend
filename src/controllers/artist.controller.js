@@ -3,32 +3,36 @@ const jwt = require('jsonwebtoken');
 const Artist = require('../models/artist.model')
 
 module.exports = {
-  list(req, res){
-    Artist
-      .find()
-      .then(artists => {
-        res.status(200).json({ message: 'Artists Found', data: artists })
-      })
-      .catch(err => {
-        res.status(404).json({ message: 'Artists not Found' })
-      });
+
+  async list(req, res){
+    try{
+      const artists = await Artist.find();
+      res.status(200).json( { message: 'Artists found', data: artists } )
+    } 
+    catch(err){
+      res.status(404).json( { message: err.message } );
+    }
   },
   async create(req, res){
     try {
       const { email, password, nickname, location, phone, name } = req.body;
+      console.log(password);
+      if(password.length < 4 || password.length > 8 ){
+        throw new Error('Your password must be between 4 and 8 characters')
+      }
       const encPassword = await bcrypt.hash(password, 8);
       const artist = await Artist.create({ email, password: encPassword, nickname, location, phone, name })
 
       res.status(201).json({ message: 'Artist Created', data: artist })
-    } catch (err){
-      res.status(400).json(err.errors.email.message)   
+    } 
+    catch(err){
+      res.status(400).json( { message: err.message } )
     }
   },
   async login(req, res){
     try {
       const { email, password } = req.body;
       const artist = await Artist.findOne({ email });
-      
       if(!artist){
         throw new Error('Invalid email or password') 
       }
@@ -42,45 +46,49 @@ module.exports = {
         process.env.SECRET,
         { expiresIn: 60 * 60 * 24 }
       );
-      res.status(200).json({ token })
-    } catch(err){
-      res.status(401).json({ message: err.message })
+      res.status(200).json( { token } )
+    } 
+    catch(err){
+      res.status(401).json( { message: err.message } )
     }
-    
   },
-  show(req, res){
-    const { artistId } = req.params;
-
-    Artist
-      .findById(artistId)
-      .then( artist => {
-        res.status(200).json({ message: 'Artist found', data: artist })
-      })
-      .catch(err => {
-        res.status(404).json({ message: 'Artist Not Found'})
-      })
-
+  async show(req, res){
+    try{
+      const { artistId } = req.params;
+      const artist = await Artist.findById(artistId)
+      if(!artist){
+        throw new Error('Artist Not Found')
+      }
+      res.status(200).json( { message: 'Artist Found', data: artist } )
+    } 
+    catch(err){
+      res.status(404).json( { message: err.message } )
+    }
   },
-  update(req, res){
-    const { artistId } = req.params;
-    Artist
-      .findByIdAndUpdate( artistId, req.body, { new: true } )
-      .then(artist => {
-        res.status(200).json({ message: 'Artist Updated', data: artist })
-      })
-      .catch(err => {
-        res.status(400).json({ message: 'Aritst could not be updated '})
-      });
+  async update(req, res){
+    try {
+      const { artistId } = req.params;
+      const artist = await Artist.findByIdAndUpdate( artistId, req.body, { new: true, runValidators: true } )
+      if(!artist){
+        throw new Error('Artist Not Found')
+      }   
+      res.status(200).json( { message: 'Artist Found', data: artist } )                                
+    } 
+    catch(err){
+      res.status(400).json( { message: err.message } )
+    }
   },
-  destroy(req, res){
-    const { artistId } = req.params;
-    Artist
-      .findByIdAndDelete(artistId)
-      .then(artist => {
-        res.status(200).json({ message: 'Artist Deleted', data: artist })
-      })
-      .catch(err => {
-        res.status(400).json({ message: 'Artist could not be deleted'})
-      });
+  async destroy(req, res){
+    try {
+      const { artistId } = req.params;
+      const artist = await Artist.findByIdAndDelete(artistId);
+      if(!artist){
+        throw new Error('Artist Not Found')
+      }
+      res.status(200).json( { message: 'Artist Deleted', data: artist } )
+    } 
+    catch(err){
+      res.status(400).json( { message: err.message } )
+    }
   }
 }
