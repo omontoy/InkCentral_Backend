@@ -28,7 +28,6 @@ module.exports = {
     try{
       const { email, password } = req.body;
       const client = await Client.findOne({ email });
-      console.log(client)
       if( !client ){
         throw new Error( 'Invalid email or password' )
       }
