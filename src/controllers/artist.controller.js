@@ -16,7 +16,6 @@ module.exports = {
   async create(req, res){
     try {
       const { email, password, nickname, location, phone, name } = req.body;
-      console.log(password);
       if(password.length < 4 || password.length > 8 ){
         throw new Error('Your password must be between 4 and 8 characters')
       }
