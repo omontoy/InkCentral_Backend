@@ -22,7 +22,12 @@ module.exports = {
       const encPassword = await bcrypt.hash(password, 8);
       const artist = await Artist.create({ email, password: encPassword, nickname, location, phone, name })
 
-      res.status(201).json({ message: 'Artist Created', data: artist })
+      const token = jwt.sign(
+        { id: artist._id },
+        process.env.SECRET,
+        { expiresIn: 60 * 60 * 24 },
+      );
+      res.status(201).json({ token });
     } 
     catch(err){
       res.status(400).json( { message: err.message } )
