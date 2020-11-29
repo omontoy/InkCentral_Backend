@@ -5,7 +5,7 @@ const Client = require('../models/client.model');
 module.exports = {
   async list(req, res){
     try {
-      const clients = await Client.find();
+      const clients = await Client.find().select('-password');
       res.status(200).json( { message: 'Clients found', data: clients } )
     } 
     catch (err){
@@ -57,7 +57,7 @@ module.exports = {
   async show(req, res){
     try{
       const { clientId } = req.params;
-      const client = await Client.findById( clientId );
+      const client = await Client.findById( clientId ).select('-password');
       if( !client ){
         throw new Error( 'Invalid ID' )
       }
@@ -70,7 +70,7 @@ module.exports = {
   async update(req, res){
     try {
       const { clientId } = req.params;
-      const client = await Client.findByIdAndUpdate( clientId, req.body, { new: true, runValidators: true});
+      const client = await Client.findByIdAndUpdate( clientId, req.body, { new: true, runValidators: true}).select('-password');
       if( !client ){
         throw new Error( 'Invalid ID' )
       }
@@ -83,7 +83,7 @@ module.exports = {
   async destroy(req, res){
     try{
       const { clientId } = req.params;
-      const client = await Client.findByIdAndDelete( clientId );
+      const client = await Client.findByIdAndDelete( clientId ).select('-password');
       if( !client ){
         throw new Error( 'Invalid ID' )
       }

@@ -6,7 +6,7 @@ module.exports = {
 
   async list(req, res){
     try{
-      const artists = await Artist.find();
+      const artists = await Artist.find().select('-password');
       res.status(200).json( { message: 'Artists found', data: artists } )
     } 
     catch(err){
@@ -59,7 +59,7 @@ module.exports = {
   async show(req, res){
     try{
       const { artistId } = req.params;
-      const artist = await Artist.findById(artistId)
+      const artist = await Artist.findById(artistId).select('-password')
       if(!artist){
         throw new Error('Artist Not Found')
       }
@@ -72,7 +72,7 @@ module.exports = {
   async update(req, res){
     try {
       const { artistId } = req.params;
-      const artist = await Artist.findByIdAndUpdate( artistId, req.body, { new: true, runValidators: true } )
+      const artist = await Artist.findByIdAndUpdate( artistId, req.body, { new: true, runValidators: true } ).select('-password')
       if(!artist){
         throw new Error('Artist Not Found')
       }   
@@ -85,7 +85,7 @@ module.exports = {
   async destroy(req, res){
     try {
       const { artistId } = req.params;
-      const artist = await Artist.findByIdAndDelete(artistId);
+      const artist = await Artist.findByIdAndDelete(artistId).select('-password');
       if(!artist){
         throw new Error('Artist Not Found')
       }
