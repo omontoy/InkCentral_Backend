@@ -20,7 +20,13 @@ module.exports = {
       }
       const encPassword = await bcrypt.hash(password, 8);
       const client = await Client.create( { email, password: encPassword } )
-      res.status(201).json( { message: 'Client Created', data: client } )
+      
+      const token = jwt.sign(
+        { id: client._id },
+        process.env.SECRET,
+        { expiresIn: 60 * 60 * 24 }
+      );
+      res.status(201).json( { token } );
     } 
     catch (err){
       res.status(400).json( { message: err.message } )
