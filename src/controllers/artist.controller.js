@@ -71,8 +71,8 @@ module.exports = {
   },
   async update(req, res){
     try {
-      const { artistId } = req.params;
-      const artist = await Artist.findByIdAndUpdate( artistId, req.body, { new: true, runValidators: true } ).select('-password')
+      const { id } = req.query;
+      const artist = await Artist.findByIdAndUpdate( id, req.body, { new: true, runValidators: true } ).select('-password')
       if(!artist){
         throw new Error('Artist Not Found')
       }   
@@ -96,3 +96,5 @@ module.exports = {
     }
   }
 }
+
+

@@ -59,7 +59,7 @@ module.exports = {
       const { clientId } = req.params;
       const client = await Client.findById( clientId ).select('-password');
       if( !client ){
-        throw new Error( 'Invalid ID' )
+        throw new Error( 'Client Not Found' )
       }
       res.status(200).json( { message: "Client Found", data: client } );      
     } 
@@ -69,8 +69,8 @@ module.exports = {
   }, 
   async update(req, res){
     try {
-      const { clientId } = req.params;
-      const client = await Client.findByIdAndUpdate( clientId, req.body, { new: true, runValidators: true}).select('-password');
+      const { id } = req.query;
+      const client = await Client.findByIdAndUpdate( id, req.body, { new: true, runValidators: true}).select('-password');
       if( !client ){
         throw new Error( 'Invalid ID' )
       }
