@@ -12,8 +12,9 @@ exports.auth = ( req, res, next ) => {
       throw new Error('Session Expired')
     }
     const { id } = jwt.verify(token, process.env.SECRET);
-    req.artist = id;
     
+    req.query = { id: id }
+   
     next();
   } catch (err){
     
