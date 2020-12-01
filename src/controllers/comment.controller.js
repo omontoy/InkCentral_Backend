@@ -1,5 +1,6 @@
 const { json } = require('express');
 const jwt = require('jsonwebtoken');
+const Client = require('../models/client.model');
 const { create, update } = require('../models/comment.model');
 const Comment = require('../models/comment.model');
 const { show } = require('./artist.controller');
@@ -7,7 +8,9 @@ const { show } = require('./artist.controller');
 module.exports = {
   async list(req, res){
     try {
-      const comments = await Comment.find();
+      const comments = await Comment.find().populate('clientAuthor', 'email').catch(err => {
+        res.status(500).json(err)
+      });
       res.status(200).json( { message: 'Comments found', data: comments } )
     } catch (err){
       res.status(400).json( { message: err.message } )
@@ -15,8 +18,14 @@ module.exports = {
   },
   async create(req, res){
     try {
-      const { mensaje, artistid, clientid } = req.body
-      const comment = await Comment.create( { mensaje, artistid, clientid, new: true, published: Date.now() } )
+      const { clientId } = req.params
+      const client = await Client.findById( clientId );
+      if(!client){
+        throw new Error( 'Invalid Client')
+      }
+      const comment = await Comment.create( { ...req.body, clientAuthor: client } )
+      client.notes.push( comment );
+      await client.save( { validateBeforeSave: false } );
       res.status(201).json( { message: 'Message Created', data: comment } )
     } catch(err){
       res.status(400).json( { message: err.message } )
@@ -30,7 +39,7 @@ module.exports = {
     } catch(err){
       res.status(400).json ( { message: err.message } )
     }
-  },
+  },/*
   async update(req, res){
     try{
       const { commentId } = req.params;
@@ -47,6 +56,6 @@ module.exports = {
     }catch (err){
       res.status(400).json( { message: err.message } )
     }
-  }
+  }*/
 }
 

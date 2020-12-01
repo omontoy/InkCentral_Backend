@@ -23,6 +23,12 @@ const clientSchema = new Schema ({
     type: String,
     required: true,
     minlength: 4,
+  },
+  notes: {
+    type: [{type: Schema.Types.ObjectId,
+    ref: 'Comment'
+    }],
+    required: true,
   }
 }, {
   timestamps: true,

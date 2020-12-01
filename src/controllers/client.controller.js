@@ -5,7 +5,7 @@ const Client = require('../models/client.model');
 module.exports = {
   async list(req, res){
     try {
-      const clients = await Client.find();
+      const clients = await Client.find().populate( 'notes', 'note');
       res.status(200).json( { message: 'Clients found', data: clients } )
     } 
     catch (err){
@@ -51,7 +51,7 @@ module.exports = {
   async show(req, res){
     try{
       const { clientId } = req.params;
-      const client = await Client.findById( clientId );
+      const client = await Client.findById( clientId ).populate( 'notes', 'note' );
       if( !client ){
         throw new Error( 'Invalid ID' )
       }

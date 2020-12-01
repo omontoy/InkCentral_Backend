@@ -1,11 +1,18 @@
 const { model, Schema, models } = require('mongoose')
 
 const commentSchema = new Schema ({
-  mensaje: String,
-  artistid: String,
-  clientid: String,
-  new: Boolean,
-  published: Date,
+  note: String,
+  /*
+  artistDestination: {
+    type: Schema.Types.ObjectId,
+    ref: 'Artist',
+    required: true,
+  },*/
+  clientAuthor: {
+    type: Schema.Types.ObjectId,
+    ref: 'Client',
+    required: true,
+  }
 }, {
   timestamps: true
 })
