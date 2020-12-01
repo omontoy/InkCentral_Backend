@@ -36,28 +36,34 @@ module.exports = {
       res.status(400).json( { message: err.message } )
     };
   },
-  async show(req, res){
-    try{
-      const { commentId } = req.params;
-      const comment = await Comment.findById( commentId );
-      res.status(200).json( { message: 'Comment found', data: comment } );
-    } catch(err){
-      res.status(400).json ( { message: err.message } )
-    }
-  },
   async update(req, res){
     try{
+      const clientId = req.userId;
       const { commentId } = req.params;
-      const comment = await Comment.findByIdAndUpdate( commentId, req.body, { new: true } );
-      res.status(200).json( { message: 'Comment Updated', data: comment } );
+      const searchcomment = await Comment.findById( commentId );  
+      const clientAuthorId = searchcomment.clientAuthor.toString()     
+      if( clientAuthorId === clientId){
+        const comment = await Comment.findByIdAndUpdate( commentId, req.body, { new: true } );
+        res.status(200).json( { message: 'Comment Updated', data: comment } );
+      }else{
+        throw new Error('Invalid Author')
+      }      
     }catch(err){
       res.status(400).json( { message: err.message } )
     }
   },
   async destroy(req, res){
     try{
+      const clientId = req.userId;
       const { commentId } = req.params;
-      const comment = await Comment.findByIdAndDelete( commentId );
+      const searchcomment = await Comment.findById( commentId );  
+      const clientAuthorId = searchcomment.clientAuthor.toString()     
+      if( clientAuthorId === clientId){
+        const comment = await Comment.findByIdAndDelete( commentId );
+        res.status(200).json( { message: 'Comment Delete', data: comment } );
+      }else{
+        throw new Error('Invalid Author')
+      }                  
     }catch (err){
       res.status(400).json( { message: err.message } )
     }
