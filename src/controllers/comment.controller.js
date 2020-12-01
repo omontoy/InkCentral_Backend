@@ -1,5 +1,6 @@
 const { json } = require('express');
 const jwt = require('jsonwebtoken');
+const Artist = require('../models/artist.model');
 const Client = require('../models/client.model');
 const { create, update } = require('../models/comment.model');
 const Comment = require('../models/comment.model');
@@ -18,14 +19,18 @@ module.exports = {
   },
   async create(req, res){
     try {
-      const { clientId } = req.params
+      const clientId = req.userId
+      const { artistId } = req.params
       const client = await Client.findById( clientId );
+      const artist = await Artist.findById( artistId );
       if(!client){
         throw new Error( 'Invalid Client')
       }
-      const comment = await Comment.create( { ...req.body, clientAuthor: client } )
+      const comment = await Comment.create( { ...req.body, clientAuthor: client, artistDestination: artist } )
       client.notes.push( comment );
+      artist.notes.push( comment );
       await client.save( { validateBeforeSave: false } );
+      await artist.save ( { validateBeforeSave: false } );
       res.status(201).json( { message: 'Message Created', data: comment } )
     } catch(err){
       res.status(400).json( { message: err.message } )
@@ -39,7 +44,7 @@ module.exports = {
     } catch(err){
       res.status(400).json ( { message: err.message } )
     }
-  },/*
+  },
   async update(req, res){
     try{
       const { commentId } = req.params;
@@ -56,6 +61,6 @@ module.exports = {
     }catch (err){
       res.status(400).json( { message: err.message } )
     }
-  }*/
+  }
 }
 
