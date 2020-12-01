@@ -12,12 +12,12 @@ exports.auth = ( req, res, next ) => {
       throw new Error('Session Expired')
     }
     const { id } = jwt.verify(token, process.env.SECRET);
-    
-    req.query = { id: id }
-   
+
+    req.userId = id 
+
     next();
   } catch (err){
-    
+
     res.status(401).json({ message: err.message });
   }
 }
