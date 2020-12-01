@@ -6,7 +6,9 @@ module.exports = {
 
   async list(req, res){
     try{
-      const artists = await Artist.find().select('-password');
+      const artists = await Artist.find()
+                                  .select('-password')
+                                  .populate( { path: 'notes', select: 'note -_id' } );
       res.status(200).json( { message: 'Artists found', data: artists } )
     }
     catch(err){
@@ -59,7 +61,9 @@ module.exports = {
   async show(req, res){
     try{
       const id  = req.userId;
-      const artist = await Artist.findById(id).select('-password')
+      const artist = await Artist.findById(id)
+                                 .select('-password')
+                                 .populate( { path: 'notes', select: 'note -_id' } );
       if(!artist){
         throw new Error('Artist Not Found')
       }
