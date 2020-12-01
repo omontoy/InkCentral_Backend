@@ -3,9 +3,9 @@ const commentController = require('../controllers/comment.controller')
 const { auth } = require('../utils/auth')
 
 router.route('/').get(auth, commentController.list);
-router.route('/').post(auth, commentController.create);
+router.route('/:artistId').post(auth, commentController.create);
 
-router.route('/:commentId').get(auth, commentController.show);
+router.route('/notes').get(auth, commentController.show);
 //router.route('/:commentId').put(auth, commentController.update);
 //router.route('/:commentId').delete(auth, commentController.destroy);
 
