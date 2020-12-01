@@ -8,7 +8,7 @@ module.exports = {
     try{
       const artists = await Artist.find().select('-password');
       res.status(200).json( { message: 'Artists found', data: artists } )
-    } 
+    }
     catch(err){
       res.status(404).json( { message: err.message } );
     }
@@ -28,7 +28,7 @@ module.exports = {
         { expiresIn: 60 * 60 * 24 },
       );
       res.status(201).json({ token });
-    } 
+    }
     catch(err){
       res.status(400).json( { message: err.message } )
     }
@@ -38,12 +38,12 @@ module.exports = {
       const { email, password } = req.body;
       const artist = await Artist.findOne({ email });
       if(!artist){
-        throw new Error('Invalid email or password') 
+        throw new Error('Invalid email or password')
       }
       const isValid = await bcrypt.compare(password, artist.password);
 
       if(!isValid){
-        throw new Error('Invalid email or password') 
+        throw new Error('Invalid email or password')
       }
       const token = jwt.sign(
         { id: artist._id },
@@ -51,33 +51,33 @@ module.exports = {
         { expiresIn: 60 * 60 * 24 }
       );
       res.status(200).json( { token } )
-    } 
+    }
     catch(err){
       res.status(401).json( { message: err.message } )
     }
   },
   async show(req, res){
     try{
-      const { artistId } = req.params;
-      const artist = await Artist.findById(artistId).select('-password')
+      const id  = req.userId;
+      const artist = await Artist.findById(id).select('-password')
       if(!artist){
         throw new Error('Artist Not Found')
       }
       res.status(200).json( { message: 'Artist Found', data: artist } )
-    } 
+    }
     catch(err){
       res.status(404).json( { message: err.message } )
     }
   },
   async update(req, res){
     try {
-      const { id } = req.query;
+      const id = req.userId;
       const artist = await Artist.findByIdAndUpdate( id, req.body, { new: true, runValidators: true } ).select('-password')
       if(!artist){
         throw new Error('Artist Not Found')
-      }   
-      res.status(200).json( { message: 'Artist Found', data: artist } )                                
-    } 
+      }
+      res.status(200).json( { message: 'Artist Found', data: artist } )
+    }
     catch(err){
       res.status(400).json( { message: err.message } )
     }
@@ -90,11 +90,9 @@ module.exports = {
         throw new Error('Artist Not Found')
       }
       res.status(200).json( { message: 'Artist Deleted', data: artist } )
-    } 
+    }
     catch(err){
       res.status(400).json( { message: err.message } )
     }
   }
 }
-
-
