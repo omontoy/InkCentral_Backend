@@ -5,7 +5,7 @@ const Client = require('../models/client.model');
 module.exports = {
   async list(req, res){
     try {
-      const clients = await Client.find().populate( 'notes', 'note');
+      const clients = await Client.find().select('-password').populate( 'notes', 'note');
       res.status(200).json( { message: 'Clients found', data: clients } )
     } 
     catch (err){
@@ -20,7 +20,13 @@ module.exports = {
       }
       const encPassword = await bcrypt.hash(password, 8);
       const client = await Client.create( { email, password: encPassword } )
-      res.status(201).json( { message: 'Client Created', data: client } )
+      
+      const token = jwt.sign(
+        { id: client._id },
+        process.env.SECRET,
+        { expiresIn: 60 * 60 * 24 }
+      );
+      res.status(201).json( { token } );
     } 
     catch (err){
       res.status(400).json( { message: err.message } )
@@ -51,9 +57,9 @@ module.exports = {
   async show(req, res){
     try{
       const { clientId } = req.params;
-      const client = await Client.findById( clientId ).populate( 'notes', 'note' );
+      const client = await Client.findById( clientId ).select('-password').populate( 'notes', 'note');
       if( !client ){
-        throw new Error( 'Invalid ID' )
+        throw new Error( 'Client Not Found' )
       }
       res.status(200).json( { message: "Client Found", data: client } );      
     } 
@@ -63,8 +69,8 @@ module.exports = {
   }, 
   async update(req, res){
     try {
-      const { clientId } = req.params;
-      const client = await Client.findByIdAndUpdate( clientId, req.body, { new: true, runValidators: true});
+      const { id } = req.query;
+      const client = await Client.findByIdAndUpdate( id, req.body, { new: true, runValidators: true}).select('-password');
       if( !client ){
         throw new Error( 'Invalid ID' )
       }
@@ -77,7 +83,7 @@ module.exports = {
   async destroy(req, res){
     try{
       const { clientId } = req.params;
-      const client = await Client.findByIdAndDelete( clientId );
+      const client = await Client.findByIdAndDelete( clientId ).select('-password');
       if( !client ){
         throw new Error( 'Invalid ID' )
       }
