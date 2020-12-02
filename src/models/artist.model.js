@@ -28,6 +28,12 @@ const artistSchema = new Schema({
   },
   location: String,
   phone: String,
+  notes: {
+    type: [{type: Schema.Types.ObjectId,
+    ref: 'Comment'
+    }],
+    required: true,
+  }
 }, {
   timestamps: true
 })
