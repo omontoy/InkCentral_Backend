@@ -75,7 +75,6 @@ module.exports = {
   },
   async showChosen(req, res){
     try{
-      console.log(req.userId);
       const { artistId } = req.params;
       const artist = await Artist.findById(artistId)
                                  .select('-password')
