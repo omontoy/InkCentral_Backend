@@ -73,6 +73,20 @@ module.exports = {
       res.status(404).json( { message: err.message } )
     }
   },
+  async showChosen(req, res){
+    try{
+      const { artistId } = req.params;
+      const artist = await Artist.findById(artistId)
+                                 .select('-password')
+      if(!artist){
+        throw new Error('Artist Not Found')
+      }
+      res.status(200).json( { message: 'Artist Found', data: artist } )
+    }
+    catch(err){
+      res.status(404).json( { message: err.message } )
+    }
+  },
   async update(req, res){
     try {
       const id = req.userId;
