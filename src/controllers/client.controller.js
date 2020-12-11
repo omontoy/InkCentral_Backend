@@ -1,19 +1,8 @@
 const bcrypt = require('bcrypt');
-const  jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const Client = require('../models/client.model');
 
 module.exports = {
-  async list(req, res){
-    try {
-      const clients = await Client.find()
-                                  .select('-password')
-                                  .populate( { path: 'notes', select: 'note -_id' } );
-      res.status(200).json( { message: 'Clients found', data: clients } )
-    } 
-    catch (err){
-      res.status(400).json( { message: err.message } )
-    };
-  },
   async create(req, res){
     try {
       const { email, password } = req.body;
@@ -22,14 +11,14 @@ module.exports = {
       }
       const encPassword = await bcrypt.hash(password, 8);
       const client = await Client.create( { email, password: encPassword } )
-      
+
       const token = jwt.sign(
         { id: client._id },
         process.env.SECRET,
         { expiresIn: 60 * 60 * 24 }
       );
       res.status(201).json( { token } );
-    } 
+    }
     catch (err){
       res.status(400).json( { message: err.message } )
     };
@@ -51,49 +40,52 @@ module.exports = {
         { expiresIn: 60 * 60 * 24 }
       )
       res.status(200).json( { token } )
-    } 
+    }
     catch (err){
       res.status(400).json( { message: err.message } )
     };
   },
   async show(req, res){
     try{
-      const { clientId } = req.params;
-      const client = await Client.findById( clientId )
+      const id  = req.userId;
+      const client = await Client.findById( id )
                                  .select('-password')
                                  .populate( { path: 'notes', select: 'note -_id' } );
       if( !client ){
         throw new Error( 'Client Not Found' )
       }
-      res.status(200).json( { message: "Client Found", data: client } );      
-    } 
+      res.status(200).json( { message: "Client Found", data: client } );
+    }
     catch (err){
       res.status(400).json( { message: err.message } )
     }
-  }, 
+  },
   async update(req, res){
     try {
-      const { id } = req.query;
-      const client = await Client.findByIdAndUpdate( id, req.body, { new: true, runValidators: true}).select('-password');
+      const id = req.userId;
+      const client = await Client.findByIdAndUpdate(
+                                        id, req.body,
+                                        { new: true, runValidators: true})
+                                        .select('-password');
       if( !client ){
         throw new Error( 'Invalid ID' )
       }
-      res.status(200).json( { message: 'Client Updated', data: client} );  
-    } 
+      res.status(200).json( { message: 'Client Updated', data: client} );
+    }
     catch (err) {
       res.status(400).json( { message: err.message } )
     }
   },
   async destroy(req, res){
     try{
-      const { clientId } = req.params;
-      const client = await Client.findByIdAndDelete( clientId ).select('-password');
+      const id = req.userId;
+      const client = await Client.findByIdAndDelete( id ).select('-password');
       if( !client ){
         throw new Error( 'Invalid ID' )
       }
-    } 
+    }
     catch (err){
       res.status(400).json( { message: err.message } )
-    }                    
+    }
   }
 }
