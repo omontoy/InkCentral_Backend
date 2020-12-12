@@ -78,6 +78,9 @@ module.exports = {
       const { artistId } = req.params;
       const artist = await Artist.findById(artistId)
                                  .select('-password')
+                                 .populate( { path: 'notes', 
+                                              select: '-artistDestination -__v -updatedAt'
+                                             } );
       if(!artist){
         throw new Error('Artist Not Found')
       }
