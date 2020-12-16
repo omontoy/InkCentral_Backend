@@ -27,8 +27,8 @@ module.exports = {
         throw new Error( 'Invalid Client')
       }
       const comment = await Comment.create( { ...req.body, clientAuthor: client, artistDestination: artist } )
-      client.notes.push( comment );
-      artist.notes.push( comment );
+      client.notes.unshift( comment );
+      artist.notes.unshift( comment );
       await client.save( { validateBeforeSave: false } );
       await artist.save ( { validateBeforeSave: false } );
       res.status(201).json( { message: 'Message Created', data: comment } )
