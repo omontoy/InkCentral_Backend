@@ -90,9 +90,12 @@ module.exports = {
       res.status(404).json( { message: err.message } )
     }
   },
+  
   async update(req, res){
     try {
+      console.log(req.body); 
       const id = req.userId;
+      console.log(req.userId);
       const artist = await Artist.findByIdAndUpdate( id, req.body, { new: true, runValidators: true } ).select('-password')
       if(!artist){
         throw new Error('Artist Not Found')
