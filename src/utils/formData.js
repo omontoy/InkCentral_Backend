@@ -31,7 +31,8 @@ formData = (req, res, next) => {
         if(err) throw new Error('Something Went Wrong!!!')
 
         console.log('response',res.secure_url);
-        req.body[key] = res
+        req.body[key] = res.secure_url
+        console.log(req.body);
         uploadingImage = false
         uploadingCount--
         done()
