@@ -29,10 +29,7 @@ formData = (req, res, next) => {
     const stream = cloudinary.uploader.upload_stream(
       (err, res) => {
         if(err) throw new Error('Something Went Wrong!!!')
-
-        console.log('response',res.secure_url);
         req.body[key] = res.secure_url
-        console.log(req.body);
         uploadingImage = false
         uploadingCount--
         done()
