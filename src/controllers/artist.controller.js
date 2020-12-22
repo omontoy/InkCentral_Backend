@@ -95,6 +95,7 @@ module.exports = {
       res.status(404).json( { message: err.message } )
     }
   },
+  
   async update(req, res){
     try {
       const id = req.userId;
