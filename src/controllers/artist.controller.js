@@ -63,7 +63,15 @@ module.exports = {
       const id  = req.userId;
       const artist = await Artist.findById(id)
                                  .select('-password')
-                                 .populate( { path: 'notes', select: 'note -_id' } );
+                                 .populate( { path: 'notes', select: 'note -_id' } )
+                                 .populate( { path: 'payments', 
+                                              select: 'consumer amount service createdAt',
+                                              populate: {
+                                                path: 'consumer',
+                                                select:'name email'
+                                              }
+                                            }
+                                          );
       if(!artist){
         throw new Error('Artist Not Found')
       }
@@ -120,6 +128,28 @@ module.exports = {
     }
     catch(err){
       res.status(400).json( { message: err.message } )
+    }
+  },
+  async showPayments(req, res){
+    try{
+      const id  = req.userId;
+      const artist = await Artist.findById(id)
+                                 .select('-password')
+                                 .populate( { path: 'payments', 
+                                              select: 'consumer amount service -_id',
+                                              populate: {
+                                                path: 'consumer',
+                                                select: 'name email'
+                                              } 
+                                            } 
+                                          );
+      if(!artist){
+        throw new Error('Artist Not Found')
+      }
+      res.status(200).json( { message: 'Artist Found', data: artist } )
+    }
+    catch(err){
+      res.status(404).json( { message: err.message } )
     }
   }
 }

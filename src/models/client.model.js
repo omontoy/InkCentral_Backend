@@ -29,6 +29,12 @@ const clientSchema = new Schema ({
     ref: 'Comment'
     }],
     required: true,
+  },
+  payments: {
+    type: [{type: Schema.Types.ObjectId,
+    ref: 'Payment'
+    }],
+    required: true,
   }
 }, {
   timestamps: true,
