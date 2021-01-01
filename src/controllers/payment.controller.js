@@ -21,5 +21,18 @@ module.exports = {
     catch (err){
       res.status(400).json( { message: err.message } )
     }
+  },
+  async destroy(req, res){
+    try{
+      const { paymentId } = req.params;
+      const payment =  await Payment.findByIdAndDelete( paymentId );
+      if(!payment){
+        throw new Error('Payment not found')
+      }
+      res.status(200).json( { message: 'Payment Deleted', data: payment })
+    }
+    catch (err){
+      res.status(400).json( { message: err.message } )
+    }
   }
 }

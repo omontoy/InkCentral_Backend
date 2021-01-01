@@ -8,7 +8,15 @@ module.exports = {
     try{
       const artists = await Artist.find()
                                   .select('-password')
-                                  .populate( { path: 'notes', select: 'note -_id' } );
+                                  .populate( {  path: 'notes', select: 'note -_id' } )
+                                  .populate( {  path: 'payments', 
+                                                select: 'consumer amount service createdAt',
+                                                populate: {
+                                                path: 'consumer',
+                                                select:'name email'
+                                              }
+                                            }
+                                          );
       res.status(200).json( { message: 'Artists found', data: artists } )
     }
     catch(err){
