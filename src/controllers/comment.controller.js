@@ -1,10 +1,6 @@
-const { json } = require('express');
-const jwt = require('jsonwebtoken');
 const Artist = require('../models/artist.model');
 const Client = require('../models/client.model');
-const { create, update } = require('../models/comment.model');
 const Comment = require('../models/comment.model');
-const { show } = require('./artist.controller');
 
 module.exports = {
   async list(req, res){
@@ -60,7 +56,7 @@ module.exports = {
       const clientAuthorId = searchcomment.clientAuthor.toString()     
       if( clientAuthorId === clientId){
         const comment = await Comment.findByIdAndDelete( commentId );
-        res.status(200).json( { message: 'Comment Delete', data: comment } );
+        res.status(200).json( { message: 'Comment Deleted', data: comment } );
       }else{
         throw new Error('Invalid Author')
       }                  
@@ -69,4 +65,3 @@ module.exports = {
     }
   }
 }
-

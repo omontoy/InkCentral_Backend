@@ -96,7 +96,7 @@ module.exports = {
                                  .select('-password')
                                  .populate({ 
                                     path: 'notes', 
-                                    select: '-artistDestination -__v -updatedAt',
+                                    select: '-artistDestination -__v -createdAt',
                                     populate: {
                                       path: 'clientAuthor',
                                       select: 'name email'
