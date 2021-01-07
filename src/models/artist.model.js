@@ -16,7 +16,7 @@ const artistSchema = new Schema({
         validator(value){
           return models.Artist.findOne( { email: value })
             .then(artist => !artist)
-            .catch(()=> false )
+            .catch(() => false )
         },
         message: "Email already exists"
       }
@@ -28,6 +28,10 @@ const artistSchema = new Schema({
   },
   location: String,
   phone: String,
+  instagram: String,
+  facebook: String,
+  twitter: String,
+  whatsapp: String,
   notes: {
     type: [{type: Schema.Types.ObjectId,
     ref: 'Comment'
