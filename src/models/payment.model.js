@@ -18,6 +18,10 @@ const paymentSchema = new Schema ({
   service: {
     type: String,
     required: true
+  }, 
+  invoiceNumber: {
+    type: String,
+    required: true
   }
 },{
   timestamps: true

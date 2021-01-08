@@ -10,7 +10,7 @@ module.exports = {
                                   .select('-password')
                                   .populate( {  path: 'notes', select: 'note -_id' } )
                                   .populate( {  path: 'payments', 
-                                                select: 'consumer amount service createdAt',
+                                                select: 'consumer amount service createdAt invoiceNumber',
                                                 populate: {
                                                 path: 'consumer',
                                                 select:'name email'
@@ -73,7 +73,7 @@ module.exports = {
                                  .select('-password')
                                  .populate( { path: 'notes', select: 'note -_id' } )
                                  .populate( { path: 'payments', 
-                                              select: 'consumer amount service createdAt',
+                                              select: 'consumer amount service createdAt invoiceNumber',
                                               populate: {
                                                 path: 'consumer',
                                                 select:'name email'
