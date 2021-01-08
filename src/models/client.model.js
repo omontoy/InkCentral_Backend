@@ -3,7 +3,10 @@ const { model, Schema, models } = require('mongoose')
 const emailRegexp  = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
 const clientSchema = new Schema ({
-  name: String,
+  name: {
+    type: String,
+    default: ''
+  },
   email: {
     type: String,
     required: true,
