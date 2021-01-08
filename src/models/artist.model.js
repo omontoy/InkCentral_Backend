@@ -2,11 +2,19 @@ const { model, Schema, models } = require('mongoose')
 
 const emailRegexp  = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
-
 const artistSchema = new Schema({
-  image: String,
-  name: String,
-  nickname: String,
+  image: {
+    type: String,
+    default: ''
+  },
+  name: {
+    type: String,
+    default: ''
+  },
+  nickname: {
+    type: String,
+    default: ''
+  },
   email: {
     type: String,
     required: true,
@@ -16,7 +24,7 @@ const artistSchema = new Schema({
         validator(value){
           return models.Artist.findOne( { email: value })
             .then(artist => !artist)
-            .catch(()=> false )
+            .catch(() => false )
         },
         message: "Email already exists"
       }
@@ -26,8 +34,30 @@ const artistSchema = new Schema({
     type: String,
     required: true,
   },
-  location: String,
-  phone: String,
+  location: {
+    type: String,
+    default: ''
+  },
+  phone: {
+    type: String,
+    default: ''
+  },
+  instagram: {
+    type: String,
+    default: ''
+  },
+  facebook: {
+    type: String,
+    default: ''
+  },
+  twitter: {
+    type: String,
+    default: ''
+  },
+  whatsapp: {
+    type: String,
+    default: ''
+  },
   notes: {
     type: [{type: Schema.Types.ObjectId,
     ref: 'Comment'
