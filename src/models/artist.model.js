@@ -54,6 +54,10 @@ const artistSchema = new Schema({
     type: String,
     default: ''
   },
+  quote: {
+    type: String,
+    default: ''
+  },
   whatsapp: {
     type: String,
     default: ''
