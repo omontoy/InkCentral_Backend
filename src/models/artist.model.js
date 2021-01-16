@@ -4,8 +4,8 @@ const emailRegexp  = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 
 const artistSchema = new Schema({
   image: {
-    type: String,
-    default: ''
+    type: [String],
+    default: []
   },
   name: {
     type: String,

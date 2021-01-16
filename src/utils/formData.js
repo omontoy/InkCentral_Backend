@@ -22,14 +22,15 @@ formData = (req, res, next) => {
   busboy.on('field', (key, val)=>{
     req.body[key] = val
   })
+  const arr = []
   busboy.on('file',(key, image) => {
     uploadingImage=true
     uploadingCount++
-  
     const stream = cloudinary.uploader.upload_stream(
       (err, res) => {
         if(err) throw new Error('Something Went Wrong!!!')
-        req.body[key] = res.secure_url
+        arr.push(res.secure_url)
+        req.body[key] = arr
         uploadingImage = false
         uploadingCount--
         done()
