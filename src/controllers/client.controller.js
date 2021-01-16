@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Client = require('../models/client.model');
+const { transporter, welcome, updateConfirmation } = require('../utils/mailer');
 
 module.exports = {
   async create(req, res){
@@ -17,6 +18,8 @@ module.exports = {
         process.env.SECRET,
         { expiresIn: 60 * 60 * 24 }
       );
+      res.status(201).json( { token } );
+      await transporter.sendMail(welcome(client))
       res.status(201).json( { token } );
     }
     catch (err){
@@ -79,6 +82,8 @@ module.exports = {
         throw new Error( 'Invalid ID' )
       }
       res.status(200).json( { message: 'Client Updated', data: client} );
+      await transporter.sendMail(updateConfirmation(client))
+
     }
     catch (err) {
       res.status(400).json( { message: err.message } )
