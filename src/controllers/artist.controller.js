@@ -6,7 +6,9 @@ module.exports = {
 
   async list(req, res){
     try{
-      const artists = await Artist.find()
+      const { inputSearch } = req.query
+      const querySearch = inputSearch ? {location: `${inputSearch}`} : {}
+      const artists = await Artist.find(querySearch)
                                   .select('-password')
                                   .populate( {  path: 'notes', select: 'note -_id' } )
                                   .populate( {  path: 'payments', 
@@ -14,9 +16,9 @@ module.exports = {
                                                 populate: {
                                                 path: 'consumer',
                                                 select:'name email'
+                                                }
                                               }
-                                            }
-                                          );
+                                            );
       res.status(200).json( { message: 'Artists found', data: artists } )
     }
     catch(err){
