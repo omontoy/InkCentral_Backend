@@ -8,6 +8,7 @@ router.route('/:clientId').delete(auth, clientController.destroy);
 
 router.route('/').post(clientController.create);
 router.route('/login').post(clientController.login);
+router.route('/forgotPassword').post(clientController.resetEmail);
 
 
 module.exports = router;

@@ -1,11 +1,15 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Client = require('../models/client.model');
+const cryptoRandomString = require('crypto-random-string');
+
+
 const { 
   transporter, 
   welcome, 
   updateConfirmation,
-  deleteConfirmation 
+  deleteConfirmation,
+  sendResetEmail 
 } = require('../utils/mailer');
 
 module.exports = {
@@ -107,5 +111,32 @@ module.exports = {
     catch (err){
       res.status(400).json( { message: err.message } )
     }
+  },
+  async resetEmail(req, res){
+    console.log(req.body.email);
+    if(req.body.email === ''){
+      res.status(400).send('email required')
+    }
+    try{
+      const client = await Client.findOne( { email: req.body.email } )
+      if(!client){
+        throw new Error('email not found in database')
+      }
+      else {
+        const token = cryptoRandomString({length: 10});
+        client.update({
+          resetPasswordToken: token,
+          resetPasswordExpires: Date.now() + 60 * 60
+        });
+        await transporter.sendMail(sendResetEmail(client, token));
+        res.status(200).json('recovery email sent')
+      }
+
+    }
+    catch (err){
+      console.dir(err)
+      res.status(400).json({ message: err.message } )
+    }
+    
   }
 }
