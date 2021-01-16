@@ -18,7 +18,7 @@ module.exports = {
         process.env.SECRET,
         { expiresIn: 60 * 60 * 24 }
       );
-      res.status(201).json( { token } );
+      
       await transporter.sendMail(welcome(client))
       res.status(201).json( { token } );
     }

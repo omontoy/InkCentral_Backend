@@ -11,14 +11,6 @@ exports.transporter = nodemailer.createTransport({
     }
 })
 
-exports.verify = async (transporter) => {
-    const connection  = await transporter.verify()
-    console.log(connection);
-    if(connection){
-        console.log('Server is ready to take our messages');
-    }
-
-} 
 exports.welcome = (client) => {
   return {
     from: `"${process.env.MAIL_USERNAME}" <${process.env.MAIL_USER}>`,
