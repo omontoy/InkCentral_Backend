@@ -10,6 +10,7 @@ router.route('/').post(clientController.create);
 router.route('/login').post(clientController.login);
 router.route('/forgotPassword').post(clientController.resetEmail);
 router.route('/reset/:resetPasswordToken').get(clientController.resetConfirm);
+router.route('/updatePassword').put(clientController.updatePassword);
 
 
 
