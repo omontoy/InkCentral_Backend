@@ -9,7 +9,7 @@ const {
   welcome, 
   updateConfirmation,
   deleteConfirmation,
-  sendResetEmail 
+  sendClientResetEmail 
 } = require('../utils/mailer');
 
 module.exports = {
@@ -118,25 +118,38 @@ module.exports = {
       res.status(400).send('email required')
     }
     try{
-      const client = await Client.findOne( { email: req.body.email } )
+      const token = cryptoRandomString({length: 10});
+      const client = await Client.findOneAndUpdate( 
+        { email: req.body.email }, 
+        { resetPasswordToken: token }
+      )
       if(!client){
         throw new Error('email not found in database')
       }
       else {
-        const token = cryptoRandomString({length: 10});
-        client.update({
-          resetPasswordToken: token,
-          resetPasswordExpires: Date.now() + 60 * 60
-        });
-        await transporter.sendMail(sendResetEmail(client, token));
+        await transporter.sendMail(sendClientResetEmail(client, token));
         res.status(200).json('recovery email sent')
       }
 
     }
     catch (err){
-      console.dir(err)
       res.status(400).json({ message: err.message } )
     }
     
+  },
+  async resetConfirm(req, res){
+    try{
+      
+      const { resetPasswordToken } = req.params;
+      const client = await Client.findOne( { resetPasswordToken } )
+      if(!client){
+        throw new Error('password reset is invalid or has expired');
+      }
+      res.status(200).json({ message: 'password reset link ok',  data: client.email })
+
+    }
+    catch (err) {
+      res.status(400).json({ message: err.message })
+    }
   }
 }

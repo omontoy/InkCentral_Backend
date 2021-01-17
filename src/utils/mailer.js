@@ -53,7 +53,7 @@ exports.deleteConfirmation = ( name, email ) => {
   }
 }
 
-exports.sendResetEmail = (user, token) => {
+exports.sendClientResetEmail = (user, token) => {
   return {
     from:`"${process.env.MAIL_USERNAME}"<${process.env.MAIL_USER}>`,
     to: user.email,
@@ -62,7 +62,7 @@ exports.sendResetEmail = (user, token) => {
       <div>
         <h1>Reset Password</h1>
         <p>Please click on the following link, or past this into your browser to complete the process within one hour of receiving it: </p>
-        <p>http://localhost:3000/reset/${token}</p>
+        <p>http://localhost:3000/clients/reset/${token}</p>
       </div>
     `
   }
