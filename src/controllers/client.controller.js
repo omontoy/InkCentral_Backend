@@ -151,5 +151,29 @@ module.exports = {
     catch (err) {
       res.status(400).json({ message: err.message })
     }
+  },
+  async updatePassword(req,res){
+    const { email, password } = req.body;
+    try {
+      if(password.length < 4 || password.length > 8){
+        throw new Error( 'Your password must be between 4 and 8 characters' )
+      }
+      const client = await Client.findOne( { email })                           
+      if( !client ){
+        throw new Error( 'Invalid Email' )
+      } 
+      else {
+        const encPassword = await bcrypt.hash(password, 8);
+        const updatedClient = await client.update({
+          password: encPassword,
+          resetPasswordToken: null,
+        })
+      }
+      res.status(200).json( { message: 'Password Updated' } );
+    }
+    catch (err) {
+      console.log('no user exists in db to update');
+      res.status(400).json( { message: err.message } )
+    }
   }
 }
