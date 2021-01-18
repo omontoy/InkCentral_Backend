@@ -7,9 +7,11 @@ const clientRouter = require('./src/routes/client')
 const commentRouter = require('./src/routes/comment')
 const paymentRouter = require('./src/routes/payment')
 
+
 const port = 8000;
 const app = express();
 connect();
+
 app.use(express.json())
 app.use(cors())
 

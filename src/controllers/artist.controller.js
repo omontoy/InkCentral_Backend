@@ -1,6 +1,15 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Artist = require('../models/artist.model')
+const cryptoRandomString = require('crypto-random-string');
+
+const { 
+  transporter, 
+  welcome, 
+  updateConfirmation,
+  deleteConfirmation,
+  sendArtistResetEmail
+} = require('../utils/mailer');
 
 module.exports = {
 
@@ -166,5 +175,68 @@ module.exports = {
     catch(err){
       res.status(404).json( { message: err.message } )
     }
+  },
+  async resetEmail(req, res){
+    if(req.body.email === ''){
+      res.status(400).send('email required')
+    }
+    try{
+      const token = cryptoRandomString({length: 10});
+      const artist = await Artist.findOneAndUpdate( 
+        { email: req.body.email }, 
+        { resetPasswordToken: token }
+      )
+      if(!artist){
+        throw new Error('email not found in database')
+      }
+      else {
+        await transporter.sendMail(sendArtistResetEmail(artist, token));
+        res.status(200).json('recovery email sent')
+      }
+
+    }
+    catch (err){
+      res.status(400).json({ message: err.message } )
+    }
+    
+  },
+  async resetConfirm(req, res){
+    try{
+      const { resetPasswordToken } = req.params;
+      const artist = await Artist.findOne( { resetPasswordToken } )
+      if(!artist){
+        throw new Error('password reset is invalid or has expired');
+      }
+      res.status(200).json({ message: 'password reset link ok',  data: artist.email })
+
+    }
+    catch (err) {
+      res.status(400).json({ message: err.message })
+    }
+  },
+  async updatePassword(req,res){
+    const { email, password } = req.body;
+    try {
+      if(password.length < 4 || password.length > 8){
+        throw new Error( 'Your password must be between 4 and 8 characters' )
+      }
+      const artist = await Artist.findOne( { email })                           
+      if( !artist ){
+        throw new Error( 'Invalid Email' )
+      } 
+      else {
+        const encPassword = await bcrypt.hash(password, 8);
+        const updatedArtist = await artist.update({
+          password: encPassword,
+          resetPasswordToken: null,
+        })
+      }
+      
+      res.status(200).json( { message: 'Password Updated' } );
+    }
+    catch (err) {
+      res.status(400).json( { message: err.message } )
+    }
   }
+
 }
