@@ -15,7 +15,9 @@ module.exports = {
 
   async list(req, res){
     try{
-      const artists = await Artist.find()
+      const { inputSearch } = req.query
+      const querySearch = inputSearch ? {location: `${inputSearch}`} : {}
+      const artists = await Artist.find(querySearch)
                                   .select('-password')
                                   .populate( {  path: 'notes', select: 'note -_id' } )
                                   .populate( {  path: 'payments', 
@@ -23,9 +25,9 @@ module.exports = {
                                                 populate: {
                                                 path: 'consumer',
                                                 select:'name email'
+                                                }
                                               }
-                                            }
-                                          );
+                                            );
       res.status(200).json( { message: 'Artists found', data: artists } )
     }
     catch(err){
@@ -82,7 +84,7 @@ module.exports = {
                                  .select('-password')
                                  .populate( { path: 'notes', select: 'note -_id' } )
                                  .populate( { path: 'payments', 
-                                              select: 'consumer amount service createdAt invoiceNumber',
+                                              select: 'consumer amount service createdAt invoiceNumber schedule',
                                               populate: {
                                                 path: 'consumer',
                                                 select:'name email'
@@ -111,6 +113,10 @@ module.exports = {
                                       select: 'name email'
                                     } 
                                  })                                 
+                                 .populate({
+                                   path: 'payments',
+                                   select: 'schedule'
+                                 })                                
       if(!artist){
         throw new Error('Artist Not Found')
       }
@@ -124,7 +130,8 @@ module.exports = {
   async update(req, res){
     try {
       const id = req.userId;
-      const artist = await Artist.findByIdAndUpdate( id, req.body, { new: true, runValidators: true } ).select('-password')
+      const artist = await Artist.findByIdAndUpdate( id, req.body, { new: true, runValidators: true } )
+                                 .select('-password')
       if(!artist){
         throw new Error('Artist Not Found')
       }

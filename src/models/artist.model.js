@@ -71,13 +71,14 @@ const artistSchema = new Schema({
   payments: {
     type: [{ type: Schema.Types.ObjectId,
     ref: 'Payment'
-  }],
+    }],
   required: true,
   },
   resetPasswordToken: {
     type: String,
     default: null
   }
+
 }, {
   timestamps: true
 })
