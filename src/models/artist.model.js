@@ -71,9 +71,9 @@ const artistSchema = new Schema({
   payments: {
     type: [{ type: Schema.Types.ObjectId,
     ref: 'Payment'
-  }],
-  required: true,
-  }
+    }],
+    required: true,
+  },
 }, {
   timestamps: true
 })
