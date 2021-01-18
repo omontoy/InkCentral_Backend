@@ -1,8 +1,6 @@
-const { create } = require('../models/payment.model')
 const Payment = require('../models/payment.model')
 const Artist = require('../models/artist.model')
 const Client = require('../models/client.model')
-const { list } = require('./artist.controller')
 
 module.exports = {
   async create(req, res){
@@ -11,7 +9,11 @@ module.exports = {
       const { artistId } = req.params
       const client = await Client.findById( clientId )
       const artist = await Artist.findById( artistId )
-      const payment = await Payment.create({...req.body, provider: artist, consumer: client } )
+      const payment = await Payment.create({
+                              ...req.body, 
+                              provider: artist, 
+                              consumer: client,
+                            })
       client.payments.push( payment )
       artist.payments.push( payment )
       await client.save( { validateBeforeSave: false } )

@@ -75,7 +75,7 @@ module.exports = {
                                  .select('-password')
                                  .populate( { path: 'notes', select: 'note -_id' } )
                                  .populate( { path: 'payments', 
-                                              select: 'consumer amount service createdAt invoiceNumber',
+                                              select: 'consumer amount service createdAt invoiceNumber schedule',
                                               populate: {
                                                 path: 'consumer',
                                                 select:'name email'
@@ -104,6 +104,10 @@ module.exports = {
                                       select: 'name email'
                                     } 
                                  })                                 
+                                 .populate({
+                                   path: 'payments',
+                                   select: 'schedule'
+                                 })                                
       if(!artist){
         throw new Error('Artist Not Found')
       }
@@ -117,7 +121,8 @@ module.exports = {
   async update(req, res){
     try {
       const id = req.userId;
-      const artist = await Artist.findByIdAndUpdate( id, req.body, { new: true, runValidators: true } ).select('-password')
+      const artist = await Artist.findByIdAndUpdate( id, req.body, { new: true, runValidators: true } )
+                                 .select('-password')
       if(!artist){
         throw new Error('Artist Not Found')
       }

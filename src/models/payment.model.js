@@ -1,4 +1,4 @@
-const { model, Schema, models } = require('mongoose')
+const { model, Schema } = require('mongoose')
 
 const paymentSchema = new Schema ({
   amount: {
@@ -22,7 +22,11 @@ const paymentSchema = new Schema ({
   invoiceNumber: {
     type: String,
     required: true
-  }
+  },
+  schedule: {
+    type: Date,
+    required: true
+  },  
 },{
   timestamps: true
 })
