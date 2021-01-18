@@ -9,7 +9,7 @@ const {
   welcome, 
   updateConfirmation,
   deleteConfirmation,
-  sendClientResetEmail 
+  sendClientResetEmail
 } = require('../utils/mailer');
 
 module.exports = {
@@ -113,7 +113,6 @@ module.exports = {
     }
   },
   async resetEmail(req, res){
-    console.log(req.body.email);
     if(req.body.email === ''){
       res.status(400).send('email required')
     }
@@ -138,8 +137,7 @@ module.exports = {
     
   },
   async resetConfirm(req, res){
-    try{
-      
+    try{     
       const { resetPasswordToken } = req.params;
       const client = await Client.findOne( { resetPasswordToken } )
       if(!client){
@@ -172,7 +170,6 @@ module.exports = {
       res.status(200).json( { message: 'Password Updated' } );
     }
     catch (err) {
-      console.log('no user exists in db to update');
       res.status(400).json( { message: err.message } )
     }
   }
