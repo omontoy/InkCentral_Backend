@@ -73,6 +73,10 @@ const artistSchema = new Schema({
     ref: 'Payment'
   }],
   required: true,
+  },
+  resetPasswordToken: {
+    type: String,
+    default: null
   }
 }, {
   timestamps: true
