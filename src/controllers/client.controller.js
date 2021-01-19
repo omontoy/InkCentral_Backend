@@ -105,7 +105,7 @@ module.exports = {
       if( !client ){
         throw new Error( 'Invalid ID' )
       }
-      await transporter.sendMail(deleteConfirmation(name, email))
+      await transporter.sendMail(deleteConfirmation(email))
       res.status(200).json( { message: 'Client Deleted', data: client } )
     }
     catch (err){

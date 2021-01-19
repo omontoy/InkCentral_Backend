@@ -48,6 +48,7 @@ module.exports = {
         process.env.SECRET,
         { expiresIn: 60 * 60 * 24 },
       );
+      await transporter.sendMail(welcome(artist))
       res.status(201).json({ token });
     }
     catch(err){
@@ -135,6 +136,7 @@ module.exports = {
       if(!artist){
         throw new Error('Artist Not Found')
       }
+      await transporter.sendMail(updateConfirmation(artist))
       res.status(200).json( { message: 'Artist Found', data: artist } )
     }
     catch(err){
@@ -148,6 +150,7 @@ module.exports = {
       if(!artist){
         throw new Error('Artist Not Found')
       }
+      await transporter.sendMail(deleteConfirmation(artist.email))
       res.status(200).json( { message: 'Artist Deleted', data: artist } )
     }
     catch(err){
