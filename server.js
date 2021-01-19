@@ -8,7 +8,7 @@ const commentRouter = require('./src/routes/comment')
 const paymentRouter = require('./src/routes/payment')
 
 
-const port = 8000;
+const port = process.env.PORT || 8000;
 const app = express();
 connect();
 
