@@ -1,7 +1,8 @@
 const mongoose = require ('mongoose');
 
 function connect() {
-  mongoose.connect('mongodb://localhost:27017/inkcentral', {
+  const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/inkcentral'
+  mongoose.connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false
