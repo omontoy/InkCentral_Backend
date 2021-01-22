@@ -19,7 +19,7 @@ formData = (req, res, next) => {
 
   req.body = {}
 
-  busboy.on('field', (key, val)=>{
+  busboy.on('field', (key, val) => {
     req.body[key] = val
   })
   const arr = []
@@ -40,7 +40,7 @@ formData = (req, res, next) => {
       console.log(data);
       stream.write(data)
     })
-    image.on('end',()=>{
+    image.on('end',() => {
       console.log('finish');
       stream.end()
     })
