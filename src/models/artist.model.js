@@ -15,6 +15,10 @@ const artistSchema = new Schema({
     type: String,
     default: ''
   },
+  enable: {
+    type: Boolean,
+    default: true
+  },
   email: {
     type: String,
     required: true,

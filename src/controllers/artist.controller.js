@@ -7,7 +7,8 @@ const {
   transporter, 
   welcome, 
   updateConfirmation,
-  deleteConfirmation,
+  hideConfirmation,
+  enableConfirmation,
   sendArtistResetEmail
 } = require('../utils/mailer');
 
@@ -16,7 +17,7 @@ module.exports = {
   async list(req, res){
     try{
       const { inputSearch } = req.query
-      const querySearch = inputSearch ? {location: `${inputSearch}`} : {}
+      const querySearch = inputSearch ? {location: `${inputSearch}`, enable: true} : {enable: true}
       const artists = await Artist.find(querySearch)
                                   .select('-password')
                                   .populate( {  path: 'notes', select: 'note -_id' } )
@@ -143,15 +144,37 @@ module.exports = {
       res.status(400).json( { message: err.message } )
     }
   },
-  async destroy(req, res){
+  async hide(req, res){
     try {
       const { artistId } = req.params;
-      const artist = await Artist.findByIdAndDelete(artistId).select('-password');
+      const artist = await Artist.findByIdAndUpdate(
+                                   artistId,
+                                   req.body,
+                                   { new: true, runValidators: true } )
+                                 .select('-password');
       if(!artist){
         throw new Error('Artist Not Found')
       }
-      await transporter.sendMail(deleteConfirmation(artist.email))
-      res.status(200).json( { message: 'Artist Deleted', data: artist } )
+      await transporter.sendMail(hideConfirmation(artist.email))
+      res.status(200).json( { message: 'Artist Hidden', data: artist } )
+    }
+    catch(err){
+      res.status(400).json( { message: err.message } )
+    }
+  },
+  async enable(req, res){
+    try {
+      const { artistId } = req.params;
+      const artist = await Artist.findByIdAndUpdate(
+                                   artistId,
+                                   req.body,
+                                   { new: true, runValidators: true } )
+                                 .select('-password');
+      if(!artist){
+        throw new Error('Artist Not Found')
+      }
+      await transporter.sendMail(enableConfirmation(artist.email))
+      res.status(200).json( { message: 'Artist Visible', data: artist } )
     }
     catch(err){
       res.status(400).json( { message: err.message } )
