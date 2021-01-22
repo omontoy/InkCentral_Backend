@@ -25,6 +25,7 @@ exports.welcome = (user) => {
     text: `Welcome\n\n${user.name}`,
   }
 }
+
 exports.updateConfirmation = (user) => {
   return {
     from:`"${process.env.MAIL_USERNAME}"<${process.env.MAIL_USER}>`,
@@ -39,14 +40,29 @@ exports.updateConfirmation = (user) => {
   }
 }
 
-exports.deleteConfirmation = ( email ) => {
+exports.hideConfirmation = ( email ) => {
   return {
     from:`"${process.env.MAIL_USERNAME}"<${process.env.MAIL_USER}>`,
     to: email,
-    subject: "Your profile with InkCentral has been deleted!",
+    subject: "Your profile with InkCentral has been hidden!",
     html:`
       <div>
-        <p>Your profile has been removed from our database.</p>
+        <p>Your profile has been set to hide in our database.</p>
+        <p>We hope see you soon in our platform.</p>
+      </div>
+    `
+  }
+}
+
+exports.enableConfirmation = ( email ) => {
+  return {
+    from:`"${process.env.MAIL_USERNAME}"<${process.env.MAIL_USER}>`,
+    to: email,
+    subject: "Your profile with InkCentral has been enabled!",
+    html:`
+      <div>
+      <p>Welcome Again.</p>  
+      <p>Your profile has been set visible in our database.</p>
       </div>
     `
   }
