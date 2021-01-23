@@ -68,6 +68,8 @@ exports.enableConfirmation = ( email ) => {
   }
 }
 
+const reset_email_url = process.env.RESET_EMAIL_URL || 'http://localhost:3000'
+
 exports.sendClientResetEmail = (user, token) => {
   return {
     from:`"${process.env.MAIL_USERNAME}"<${process.env.MAIL_USER}>`,
@@ -77,7 +79,7 @@ exports.sendClientResetEmail = (user, token) => {
       <div>
         <h1>Reset Password</h1>
         <p>Please click on the following link, or past this into your browser to complete the process within one hour of receiving it: </p>
-        <p>http://localhost:3000/clients/reset/${token}</p>
+        <p>${reset_email_url}/clients/reset/${token}</p>
       </div>
     `
   }
@@ -92,7 +94,7 @@ exports.sendArtistResetEmail = (user, token) => {
       <div>
         <h1>Reset Password</h1>
         <p>Please click on the following link, or past this into your browser to complete the process within one hour of receiving it: </p>
-        <p>http://localhost:3000/artists/reset/${token}</p>
+        <p>${reset_email_url}/artists/reset/${token}</p>
       </div>
     `
   }
